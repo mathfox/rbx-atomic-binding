@@ -1,11 +1,10 @@
 {
 	"name": "@rbxts/atomic-binding",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "Types for AtomicBinding module",
 	"main": "out/AtomicBinding.luau",
 	"scripts": {
 		"build": "rbxtsc",
-		"watch": "rbxtsc -w",
 		"prepublishOnly": "bun run build"
 	},
 	"keywords": [
