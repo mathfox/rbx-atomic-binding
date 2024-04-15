@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/atomic-binding",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Types for AtomicBinding module",
 	"main": "out/AtomicBinding.luau",
 	"scripts": {
@@ -16,7 +16,7 @@
 	],
 	"author": "Ivan Leontev",
 	"license": "MIT",
-	"types": "out/index.d.ts",
+	"types": "out/AtomicBinding.d.ts",
 	"files": [
 		"out",
 		"!**/*.tsbuildinfo"
