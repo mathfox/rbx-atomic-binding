@@ -5,6 +5,9 @@ The contents of this file were taken from [Roblox](https://www.roblox.com)-provi
 
 ## Basic Usage
 
+Note that there is autocomplete support for alias values.
+You should use slash (/) to see the possible paths.
+
 ```ts
 type Character = Model & {
 	Humanoid: Humanoid & {
@@ -14,20 +17,30 @@ type Character = Model & {
 };
 
 const characterManifest = {
+    animator: "Humanoid/Animator",
 	humanoid: "Humanoid",
 	rootPart: "HumanoidRootPart",
 } satisfies Manifest<Character>;
 
 const binding = new AtomicBinding<Character, typeof characterManifest>(
 	characterManifest,
-	({ root, humanoid, rootPart }) => {
+	({ root, animator, humanoid, rootPart }) => {
 		// do something with "Animator"
+        // do something with "Humanoid"
 		// do something with "HumanoidRootPart"
 
-		return () => {};
+		return () => {
+            // Disconnect all "instances" related connections
+        };
 	},
 );
 
+const character = {} as Character
+
 // some CharacterAdded event handler
-binding.bindRoot({} as Character);
+binding.bindRoot(character);
+
+// some CharacterRemoving event handler
+binding.unbindRoot(character);
+
 ```
