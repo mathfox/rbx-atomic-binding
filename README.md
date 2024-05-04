@@ -17,7 +17,7 @@ type Character = Model & {
 };
 
 const characterManifest = {
-    animator: "Humanoid/Animator",
+	animator: "Humanoid/Animator",
 	humanoid: "Humanoid",
 	rootPart: "HumanoidRootPart",
 } satisfies Manifest<Character>;
@@ -26,12 +26,12 @@ const binding = new AtomicBinding<Character, typeof characterManifest>(
 	characterManifest,
 	({ root, animator, humanoid, rootPart }) => {
 		// do something with "Animator"
-        // do something with "Humanoid"
+		// do something with "Humanoid"
 		// do something with "HumanoidRootPart"
 
 		return () => {
-            // Disconnect all "instances" related connections
-        };
+			// Disconnect all "instances" related connections
+		};
 	},
 );
 
