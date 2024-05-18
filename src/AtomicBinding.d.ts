@@ -34,7 +34,7 @@ export type ManifestInstances<Root extends AnyManifestRoot, P extends Manifest<R
 	root: Root;
 };
 
-interface AtomicBinding<R extends AnyManifestRoot, M extends Manifest<R>> {
+interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M extends Manifest<R> = Manifest<R>> {
 	_parsedManifest: {
 		[K in keyof M]: Array<string>;
 	};
@@ -52,3 +52,8 @@ declare const AtomicBinding: new <Root extends AnyManifestRoot, M extends Manife
 	manifest: M,
 	boundFn: (instances: ManifestInstances<Root, M>) => Callback,
 ) => AtomicBinding<Root, M>;
+
+export type InferManifestRoot<B extends object> = B extends AtomicBinding<infer R> ? R : never;
+
+export type InferManifest<B extends object> =
+	B extends AtomicBinding<infer R, infer M> ? (M extends Manifest<R> ? M : never) : never;
