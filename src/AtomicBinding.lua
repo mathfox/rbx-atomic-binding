@@ -93,7 +93,7 @@ function AtomicBinding:waitForAlias(root, alias)
     local child = root
 
     for _, childName in parsedPath do
-        child = child.WaitForChild(childName)
+        child = child:WaitForChild(childName)
     end
 
     return child
