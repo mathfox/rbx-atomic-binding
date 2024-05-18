@@ -1,13 +1,23 @@
 --!nonstrict
+--!native
+
+--[[
+    The credit goes to https://www.roblox.com/
+
+    This is modified version of the original module provided by Roblox.
+]]
+
 local ROOT_ALIAS = "root"
 
 local function parsePath(pathStr)
 	local pathArray = string.split(pathStr, "/")
+
 	for idx = #pathArray, 1, -1 do
 		if pathArray[idx] == "" then
 			table.remove(pathArray, idx)
 		end
 	end
+
 	return pathArray
 end
 
@@ -75,6 +85,18 @@ function AtomicBinding.new(manifest, boundFn)
 		_rootInstToRootNode = rootInstToRootNode,
 		_rootInstToManifest = rootInstToManifest,
 	}, AtomicBinding)
+end
+
+-- This function is not included in the original version of the module
+function AtomicBinding:waitForAlias(root, alias)
+    local parsedPath = self._parsedManifest[alias]
+    local child = root
+
+    for _, childName in parsedPath do
+        child = child.WaitForChild(childName)
+    end
+
+    return child
 end
 
 function AtomicBinding:_startBoundFn(root, resolvedManifest)

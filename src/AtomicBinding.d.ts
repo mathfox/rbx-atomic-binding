@@ -34,21 +34,21 @@ export type ManifestInstances<Root extends AnyManifestRoot, P extends Manifest<R
 	root: Root;
 };
 
-interface AtomicBinding<Root extends AnyManifestRoot> {
-	bindRoot(root: Root): void;
+interface AtomicBinding<R extends AnyManifestRoot, M extends Manifest<R>> {
+	_parsedManifest: {
+		[K in keyof M]: Array<string>;
+	};
 
-	unbindRoot(root: Root): void;
+	bindRoot(root: R): void;
+
+	unbindRoot(root: R): void;
+
+	waitForAlias<K extends keyof M>(root: R, alias: K): DeepIndex<R, M[K]>;
 
 	destroy(): void;
 }
 
-declare const AtomicBinding: new <
-	Root extends AnyManifestRoot,
-	M extends Manifest<Root> = Manifest<Root>,
-	BoundFn extends (instances: ManifestInstances<Root, M>) => Callback = (
-		instances: ManifestInstances<Root, M>,
-	) => Callback,
->(
+declare const AtomicBinding: new <Root extends AnyManifestRoot, M extends Manifest<Root> = Manifest<Root>>(
 	manifest: M,
-	boundFn: BoundFn,
-) => AtomicBinding<Root>;
+	boundFn: (instances: ManifestInstances<Root, M>) => Callback,
+) => AtomicBinding<Root, M>;
