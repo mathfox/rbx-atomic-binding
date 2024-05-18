@@ -22,11 +22,9 @@ type DeepIndex<T, K extends string> = T extends object
 
 export type AnyManifestRoot = Instance;
 
-export type ManifestAliases<Root extends AnyManifestRoot> = {
+export type Manifest<Root extends AnyManifestRoot> = {
 	[alias: string]: Nested<Root>;
 };
-
-export type Manifest<Root extends AnyManifestRoot> = ManifestAliases<Root>;
 
 export type ManifestInstances<Root extends AnyManifestRoot, P extends Manifest<Root>> = {
 	[K in keyof P]: DeepIndex<Root, P[K]>;
@@ -57,3 +55,7 @@ export type InferManifestRoot<B extends object> = B extends AtomicBinding<infer 
 
 export type InferManifest<B extends object> =
 	B extends AtomicBinding<infer R, infer M> ? (M extends Manifest<R> ? M : never) : never;
+
+export type InferAliasInstance<B extends AtomicBinding, A extends keyof InferManifest<B>> = A extends string
+	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
+	: never;
