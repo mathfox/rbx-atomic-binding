@@ -8,7 +8,7 @@ type Slashed<T extends string> = T extends "" ? "" : `/${T}`;
 
 type Key<T> = Exclude<keyof T, symbol>;
 
-type DeepIndex<T, K extends string> = T extends object
+export type DeepIndex<T, K extends string> = T extends object
 	? string extends K
 		? never
 		: K extends keyof T
