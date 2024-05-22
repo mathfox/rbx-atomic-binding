@@ -32,7 +32,7 @@ export type ManifestInstances<Root extends AnyManifestRoot, P extends Manifest<R
 	root: Root;
 };
 
-interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M extends Manifest<R> = Manifest<R>> {
+export interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M extends Manifest<R> = Manifest<R>> {
 	_parsedManifest: {
 		[K in keyof M]: Array<string>;
 	};
