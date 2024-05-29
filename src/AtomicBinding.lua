@@ -40,9 +40,10 @@ local function unbindNodeDescend(node, resolvedManifest)
 
 	local connections = node.connections
 	if connections then
-		for _, conn in ipairs(connections) do
-			conn:Disconnect()
+		for _, connection in ipairs(connections) do
+			connection:Disconnect()
 		end
+
 		table.clear(connections)
 	end
 
@@ -89,14 +90,14 @@ end
 
 -- This function is not included in the original version of the module
 function AtomicBinding:waitForAlias(root, alias)
-    local parsedPath = self._parsedManifest[alias]
-    local child = root
+	local parsedPath = self._parsedManifest[alias]
+	local child = root
 
-    for _, childName in parsedPath do
-        child = child:WaitForChild(childName)
-    end
+	for _, childName in parsedPath do
+		child = child:WaitForChild(childName)
+	end
 
-    return child
+	return child
 end
 
 function AtomicBinding:_startBoundFn(root, resolvedManifest)
@@ -164,7 +165,6 @@ function AtomicBinding:bindRoot(root)
 				end
 
 				childNode.alias = alias
-
 			else
 				childNode.children = childNode.children or {}
 				childNode.connections = childNode.connections or {}
@@ -296,5 +296,5 @@ function AtomicBinding:destroy()
 end
 
 return {
-    AtomicBinding = AtomicBinding
+	AtomicBinding = AtomicBinding,
 }
