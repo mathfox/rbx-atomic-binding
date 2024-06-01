@@ -22,14 +22,14 @@ export type DeepIndex<T, K extends string> = T extends object
 
 export type AnyManifestRoot = Instance;
 
-export type Manifest<Root extends AnyManifestRoot> = {
-	[alias: string]: Nested<Root>;
+export type Manifest<R extends AnyManifestRoot> = {
+	[alias: string]: Nested<R>;
 };
 
-export type ManifestInstances<Root extends AnyManifestRoot, P extends Manifest<Root>> = {
-	[K in keyof P]: DeepIndex<Root, P[K]>;
+export type ManifestInstances<R extends AnyManifestRoot, M extends Manifest<R>> = {
+	[K in keyof M]: DeepIndex<R, M[K]>;
 } & {
-	root: Root;
+	root: R;
 };
 
 export interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M extends Manifest<R> = Manifest<R>> {
@@ -46,10 +46,10 @@ export interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M ex
 	destroy(): void;
 }
 
-declare const AtomicBinding: new <Root extends AnyManifestRoot, M extends Manifest<Root> = Manifest<Root>>(
+declare const AtomicBinding: new <R extends AnyManifestRoot = AnyManifestRoot, M extends Manifest<R> = Manifest<R>>(
 	manifest: M,
-	boundFn: (instances: ManifestInstances<Root, M>) => Callback,
-) => AtomicBinding<Root, M>;
+	boundFn: (instances: ManifestInstances<R, M>) => Callback | void,
+) => AtomicBinding<R, M>;
 
 export type InferManifestRoot<B extends object> = B extends AtomicBinding<infer R> ? R : never;
 
