@@ -43,4 +43,6 @@ binding.bindRoot(character);
 // some CharacterRemoving event handler
 binding.unbindRoot(character);
 
+binding.destroy();
+
 ```
