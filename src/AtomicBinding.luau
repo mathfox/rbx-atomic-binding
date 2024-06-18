@@ -322,7 +322,7 @@ local exports = {
 
 table.freeze(exports)
 
-function exports.getRawPathInstance<Root>(root: Root, rawPath: string)
+function exports.getInstanceFromRawPath<Root>(root: Root, rawPath: string)
     local instance = root
 
     for _, node in string.split(rawPath, "/") do

@@ -60,7 +60,7 @@ export type InferAliasInstance<B extends AtomicBinding, A extends keyof InferMan
 	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
 	: never;
 
-export declare function getRawPathInstance<
+export declare function getInstanceFromRawPath<
 	const Root extends AnyManifestRoot = AnyManifestRoot,
 	const RawPath extends Nested<Root> = Nested<Root>,
 >(root: Root, rawPath: RawPath): DeepIndex<Root, RawPath>;
