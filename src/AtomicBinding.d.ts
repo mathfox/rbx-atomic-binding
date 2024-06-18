@@ -1,6 +1,6 @@
 type Path<T> = (T extends object ? Nested<T> : "") extends infer D ? Extract<D, string> : never;
 
-type Nested<T extends object, P extends Key<T> = Key<T>> = {
+export type Nested<T extends object, P extends Key<T> = Key<T>> = {
 	[K in P]: T[K] extends Instance ? `${K}${Slashed<Path<T[K]>>}` | "" : "";
 }[P];
 
@@ -59,3 +59,5 @@ export type InferManifest<B extends object> =
 export type InferAliasInstance<B extends AtomicBinding, A extends keyof InferManifest<B>> = A extends string
 	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
 	: never;
+
+export declare function getRawPathInstance<const RawPath extends Nested<object>>(rawPath: RawPath): void;

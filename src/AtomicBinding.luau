@@ -7,9 +7,14 @@
     This is modified version of the original module provided by Roblox.
 ]]
 
+local AtomicBindingConfiguration = require(script.Parent.AtomicBindingConfiguration)
+
+-- TODO: add types
+export type AtomicBinding = {}
+
 local ROOT_ALIAS = "root"
 
-local function parsePath(pathStr)
+local function parsePath(pathStr: string)
 	local pathArray = string.split(pathStr, "/")
 
 	for idx = #pathArray, 1, -1 do
@@ -127,7 +132,10 @@ function AtomicBinding:_stopBoundFn(root)
 end
 
 function AtomicBinding:bindRoot(root)
-	debug.profilebegin("AtomicBinding:BindRoot")
+	local profileDebugging = AtomicBindingConfiguration._currentConfiguration.profileDebugging
+	if profileDebugging then
+		debug.profilebegin("AtomicBinding:BindRoot")
+	end
 
 	local parsedManifest = self._parsedManifest
 	local rootInstToRootNode = self._rootInstToRootNode
@@ -139,7 +147,9 @@ function AtomicBinding:bindRoot(root)
 	local resolvedManifest = {}
 	rootInstToManifest[root] = resolvedManifest
 
-	debug.profilebegin("BuildTree")
+	if profileDebugging then
+		debug.profilebegin("BuildTree")
+	end
 
 	local rootNode = {}
 	rootNode.alias = ROOT_ALIAS
@@ -175,7 +185,9 @@ function AtomicBinding:bindRoot(root)
 		end
 	end
 
-	debug.profileend() -- BuildTree
+	if profileDebugging then
+		debug.profileend() -- BuildTree
+	end
 
 	-- Recursively descend into the tree, resolving each node.
 	-- Nodes start out as empty and instance-less; the resolving process discovers instances to map to nodes.
@@ -248,11 +260,15 @@ function AtomicBinding:bindRoot(root)
 		end
 	end
 
-	debug.profilebegin("ResolveTree")
+	if profileDebugging then
+		debug.profilebegin("ResolveTree")
+	end
 	processNode(rootNode)
-	debug.profileend() -- ResolveTree
+	if profileDebugging then
+		debug.profileend() -- ResolveTree
 
-	debug.profileend() -- AtomicBinding:BindRoot
+		debug.profileend() -- AtomicBinding:BindRoot
+	end
 end
 
 function AtomicBinding:unbindRoot(root)
@@ -272,7 +288,10 @@ function AtomicBinding:unbindRoot(root)
 end
 
 function AtomicBinding:destroy()
-	debug.profilebegin("AtomicBinding:destroy")
+	local profileDebugging = AtomicBindingConfiguration._currentConfiguration.profileDebugging
+	if profileDebugging then
+		debug.profilebegin("AtomicBinding:destroy")
+	end
 
 	for _, dtor in pairs(self._dtorMap) do
 		dtor:destroy()
@@ -292,9 +311,19 @@ function AtomicBinding:destroy()
 	table.clear(self._rootInstToManifest)
 	table.clear(self._rootInstToRootNode)
 
-	debug.profileend()
+	if profileDebugging then
+		debug.profileend()
+	end
 end
 
-return {
+local exports = {
 	AtomicBinding = AtomicBinding,
 }
+
+table.freeze(exports)
+
+function exports.getRawPathInstance()
+
+end
+
+return exports
