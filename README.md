@@ -46,3 +46,20 @@ binding.unbindRoot(character);
 binding.destroy();
 
 ```
+
+The "getInstanceFromRawPath" function is quite helpful when we just want to ensure that the instance exists at the provided path.
+```ts
+type SomeModel = Model & {
+    Particles: Folder & {
+        Particle1: ParticleEmitter;
+        Particle2: ParticleEmitter;
+    }
+}
+
+const someModel = {} as SomeModel
+
+const particle = getInstanceFromRawPath(someModel, "Particles/Particle1")
+if (!particle) {
+    return
+}
+```
