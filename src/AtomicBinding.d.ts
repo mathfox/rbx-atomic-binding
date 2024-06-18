@@ -1,4 +1,6 @@
-type Path<T> = (T extends object ? Nested<T> : "") extends infer D ? Extract<D, string> : never;
+type Path<T> = (T extends object ? Nested<T> : "") extends infer D
+	? Extract<D, string>
+	: never;
 
 type Slashed<T extends string> = T extends "" ? "" : `/${T}`;
 
@@ -26,13 +28,19 @@ export type Manifest<R extends AnyManifestRoot> = {
 	[alias in string]: Nested<R>;
 };
 
-export type ManifestInstances<R extends AnyManifestRoot, M extends Manifest<R>> = {
+export type ManifestInstances<
+	R extends AnyManifestRoot,
+	M extends Manifest<R>,
+> = {
 	[K in keyof M]: DeepIndex<R, M[K]>;
 } & {
 	root: R;
 };
 
-export interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M extends Manifest<R> = Manifest<R>> {
+export interface AtomicBinding<
+	R extends AnyManifestRoot = AnyManifestRoot,
+	M extends Manifest<R> = Manifest<R>,
+> {
 	_parsedManifest: {
 		[K in keyof M]: Array<string>;
 	};
@@ -47,19 +55,32 @@ export interface AtomicBinding<R extends AnyManifestRoot = AnyManifestRoot, M ex
 }
 
 declare const AtomicBinding: new <
-	const R extends AnyManifestRoot = AnyManifestRoot,
-	const M extends Manifest<R> = Manifest<R>,
+	R extends AnyManifestRoot = AnyManifestRoot,
+	M extends Manifest<R> = Manifest<R>,
 >(
 	manifest: M,
 	boundFn: (instances: ManifestInstances<R, M>) => Callback | void,
 ) => AtomicBinding<R, M>;
 
-export type InferManifestRoot<B extends object> = B extends AtomicBinding<infer R> ? R : never;
+export type InferManifestRoot<B extends object> = B extends AtomicBinding<
+	infer R
+>
+	? R
+	: never;
 
-export type InferManifest<B extends object> =
-	B extends AtomicBinding<infer R, infer M> ? (M extends Manifest<R> ? M : never) : never;
+export type InferManifest<B extends object> = B extends AtomicBinding<
+	infer R,
+	infer M
+>
+	? M extends Manifest<R>
+		? M
+		: never
+	: never;
 
-export type InferAliasInstance<B extends AtomicBinding, A extends keyof InferManifest<B>> = A extends string
+export type InferAliasInstance<
+	B extends AtomicBinding,
+	A extends keyof InferManifest<B>,
+> = A extends string
 	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
 	: never;
 
