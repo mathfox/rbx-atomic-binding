@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/atomic-binding",
-	"version": "0.2.5",
+	"version": "0.2.6",
 	"description": "Types for AtomicBinding module",
 	"main": "out/AtomicBinding.lua",
 	"scripts": {
@@ -12,12 +12,7 @@
 		"type": "git",
 		"url": "git+https://github.com/mathfox/rbx-atomic-binding.git"
 	},
-	"keywords": [
-		"atomic",
-		"binding",
-		"atomic-binding",
-		"instance"
-	],
+	"keywords": ["atomic", "binding", "atomic-binding", "instance"],
 	"author": {
 		"name": "Ivan Leontev",
 		"url": "https://github.com/mathfox"
@@ -28,10 +23,7 @@
 	},
 	"homepage": "https://github.com/mathfox/rbx-atomic-binding#readme",
 	"types": "out/AtomicBinding.d.ts",
-	"files": [
-		"out",
-		"!**/*.tsbuildinfo"
-	],
+	"files": ["out", "!**/*.tsbuildinfo"],
 	"publishConfig": {
 		"access": "public"
 	},
