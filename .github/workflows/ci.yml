@@ -1,29 +1,41 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches:
+            - master
 
-permissions:
-  contents: write
-  packages: write
+    pull_request:
+        branches:
+            - master
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.3
+    format:
+        name: Formatting
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Install Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+            - name: Install dependencies
+              run: bun install --frozen-lockfile
+            - name: Run Biome
+              run: bunx @biomejs/biome format src
 
-      - name: Install Dependencies
-        run: bun i
-
-      - name: Run ESLint
-        run: bun eslint src
-
-      - name: Build & Compile
-        run: bun build --verbose
+    lint:
+        name: Linting
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Install Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+            - name: Install dependencies
+              run: bun install --frozen-lockfile
+            - name: Run Biome
+              run: bunx @biomejs/biome lint src

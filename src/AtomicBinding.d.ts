@@ -59,7 +59,7 @@ declare const AtomicBinding: new <
 	M extends Manifest<R> = Manifest<R>,
 >(
 	manifest: M,
-	boundFn: (instances: ManifestInstances<R, M>) => Callback | void,
+	boundFn: (instances: ManifestInstances<R, M>) => Callback | undefined,
 ) => AtomicBinding<R, M>;
 
 export type InferManifestRoot<B extends object> = B extends AtomicBinding<
