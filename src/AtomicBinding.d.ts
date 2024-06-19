@@ -87,4 +87,4 @@ export type InferAliasInstance<
 export function getInstanceFromRawPath<
 	const Root extends AnyManifestRoot = AnyManifestRoot,
 	const RawPath extends Nested<Root> = Nested<Root>,
->(root: Root, rawPath: RawPath): DeepIndex<Root, RawPath>;
+>(root: Root, rawPath: RawPath): DeepIndex<Root, RawPath> | undefined;

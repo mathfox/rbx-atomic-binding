@@ -324,7 +324,7 @@ function exports.getInstanceFromRawPath<Root>(root: Root, rawPath: string)
 	local instance = root
 
 	for _, node in string.split(rawPath, "/") do
-		instance = instance.FindFirstChild(node)
+		instance = instance:FindFirstChild(node)
 		if instance == nil then
 			return
 		end
