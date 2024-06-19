@@ -1,6 +1,6 @@
 {
 	"name": "AtomicBinding",
 	"tree": {
-		"$path": "src"
+		"$path": "out"
 	}
 }
