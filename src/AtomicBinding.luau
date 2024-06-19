@@ -320,19 +320,19 @@ local exports = {
 	AtomicBinding = AtomicBinding,
 }
 
-table.freeze(exports)
-
 function exports.getInstanceFromRawPath<Root>(root: Root, rawPath: string)
-    local instance = root
+	local instance = root
 
-    for _, node in string.split(rawPath, "/") do
-        instance = instance.FindFirstChild(node)
-        if instance == nil then
-            return
-        end
-    end
+	for _, node in string.split(rawPath, "/") do
+		instance = instance.FindFirstChild(node)
+		if instance == nil then
+			return
+		end
+	end
 
-    return instance
+	return instance
 end
+
+table.freeze(exports)
 
 return exports
