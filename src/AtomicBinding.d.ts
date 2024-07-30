@@ -36,10 +36,6 @@ export interface AtomicBinding<
 	R extends Instance = Instance,
 	M extends Manifest<R> = Manifest<R>,
 > {
-	_parsedManifest: {
-		[K in keyof M]: Array<string>;
-	};
-
 	bindRoot(root: R): void;
 
 	unbindRoot(root: R): void;
