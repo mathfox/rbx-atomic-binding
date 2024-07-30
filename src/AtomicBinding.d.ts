@@ -79,7 +79,7 @@ export type InferAliasInstance<
 	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
 	: never;
 
-export function getInstanceFromRawPath<
+export function getInstanceFromPath<
 	const Root extends Instance = Instance,
-	const RawPath extends Nested<Root> = Nested<Root>,
->(root: Root, rawPath: RawPath): DeepIndex<Root, RawPath> | undefined;
+	const Path extends Nested<Root> = Nested<Root>,
+>(root: Root, path: Path): DeepIndex<Root, Path> | undefined;
