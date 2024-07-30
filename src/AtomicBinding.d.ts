@@ -22,23 +22,18 @@ export type DeepIndex<T, K extends string> = T extends object
 				: never
 	: never;
 
-export type AnyManifestRoot = Instance;
-
-export type Manifest<R extends AnyManifestRoot> = {
+export type Manifest<R extends Instance> = {
 	[alias in string]: Nested<R>;
 };
 
-export type ManifestInstances<
-	R extends AnyManifestRoot,
-	M extends Manifest<R>,
-> = {
+export type ManifestInstances<R extends Instance, M extends Manifest<R>> = {
 	[K in keyof M]: DeepIndex<R, M[K]>;
 } & {
 	root: R;
 };
 
 export interface AtomicBinding<
-	R extends AnyManifestRoot = AnyManifestRoot,
+	R extends Instance = Instance,
 	M extends Manifest<R> = Manifest<R>,
 > {
 	_parsedManifest: {
@@ -55,7 +50,7 @@ export interface AtomicBinding<
 }
 
 declare const AtomicBinding: new <
-	R extends AnyManifestRoot = AnyManifestRoot,
+	R extends Instance = Instance,
 	M extends Manifest<R> = Manifest<R>,
 >(
 	manifest: M,
@@ -85,6 +80,6 @@ export type InferAliasInstance<
 	: never;
 
 export function getInstanceFromRawPath<
-	const Root extends AnyManifestRoot = AnyManifestRoot,
+	const Root extends Instance = Instance,
 	const RawPath extends Nested<Root> = Nested<Root>,
 >(root: Root, rawPath: RawPath): DeepIndex<Root, RawPath> | undefined;
