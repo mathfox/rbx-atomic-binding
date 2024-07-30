@@ -1,4 +1,4 @@
-import type { PossiblePaths, DeepIndex } from "./AtomicBinding";
+import type { DeepIndex, PossiblePaths } from "./AtomicBinding";
 
 export * from "./AtomicBinding";
 export * from "./AtomicBindingConfiguration";
