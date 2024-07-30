@@ -1,6 +1,6 @@
 {
-	"name": "atomic-binding",
-	"tree": {
-		"$path": "out"
-	}
+    "name": "atomic-binding",
+    "tree": {
+        "$path": "src"
+    }
 }
