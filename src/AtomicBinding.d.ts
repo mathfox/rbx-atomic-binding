@@ -1,46 +1,70 @@
-type Path<T> = (T extends object ? Nested<T> : "") extends infer D
-	? Extract<D, string>
-	: never;
-
-type Slashed<T extends string> = T extends "" ? "" : `/${T}`;
-
-type Key<T> = Exclude<keyof T, symbol>;
-
-export type Nested<T extends object, P extends Key<T> = Key<T>> = {
-	[K in P]: T[K] extends Instance ? `${K}${Slashed<Path<T[K]>>}` | "" : "";
-}[P];
-
-export type DeepIndex<T, K extends string> = T extends object
-	? string extends K
-		? never
-		: K extends keyof T
-			? T[K]
-			: K extends `${infer F}/${infer R}`
-				? F extends keyof T
-					? DeepIndex<T[F], R>
-					: never
-				: never
-	: never;
-
-export type Manifest<R extends Instance> = {
-	[alias in string]: Nested<R>;
+export type InferDescendantsTree<Root extends Instance> = {
+	-readonly [Key in keyof Root as Key extends string
+		? Root[Key] extends Instance
+			? // Weird trick to exclude `never` type
+				[Root[Key]] extends [never]
+				? never
+				: Key
+			: never
+		: never]: Root[Key] extends infer Child extends Instance
+		? InferDescendantsTree<Child>
+		: never;
 };
 
-export type ManifestInstances<R extends Instance, M extends Manifest<R>> = {
-	[K in keyof M]: DeepIndex<R, M[K]>;
+export type PossiblePaths<
+	Root extends Instance,
+	ChildName extends
+		keyof InferDescendantsTree<Root> = keyof InferDescendantsTree<Root>,
+> = ChildName extends string
+	? InferDescendantsTree<Root>[ChildName] extends Record<string, never>
+		? ChildName
+		: ChildName extends keyof Root
+			? Root[ChildName] extends Instance
+				? ChildName | `${ChildName}/${PossiblePaths<Root[ChildName]>}`
+				: never
+			: never
+	: never;
+
+export type DeepIndex<
+	Root extends Instance,
+	Path extends PossiblePaths<Root>,
+> = Path extends keyof Root
+	? Root[Path]
+	: Path extends `${infer ChildName}/${infer RestPath}`
+		? ChildName extends keyof Root
+			? Root[ChildName] extends Instance
+				? RestPath extends PossiblePaths<Root[ChildName]>
+					? DeepIndex<Root[ChildName], RestPath>
+					: never
+				: never
+			: never
+		: never;
+
+export type Manifest<Root extends Instance> = {
+	[Alias in string]: PossiblePaths<Root>;
+};
+
+export type ManifestInstances<
+	Root extends Instance,
+	M extends Manifest<Root>,
+> = {
+	[K in keyof M]: DeepIndex<Root, M[K]>;
 } & {
-	root: R;
+	root: Root;
 };
 
 export interface AtomicBinding<
-	R extends Instance = Instance,
-	M extends Manifest<R> = Manifest<R>,
+	Root extends Instance = Instance,
+	M extends Manifest<Root> = Manifest<Root>,
 > {
-	bindRoot(root: R): void;
+	bindRoot(root: Root): void;
 
-	unbindRoot(root: R): void;
+	unbindRoot(root: Root): void;
 
-	waitForAlias<const K extends keyof M>(root: R, alias: K): DeepIndex<R, M[K]>;
+	waitForAlias<const K extends keyof M>(
+		root: Root,
+		alias: K,
+	): DeepIndex<Root, M[K]>;
 
 	destroy(): void;
 }
@@ -77,5 +101,5 @@ export type InferAliasInstance<
 
 export function getInstanceFromPath<
 	const Root extends Instance = Instance,
-	const Path extends Nested<Root> = Nested<Root>,
+	const Path extends PossiblePaths<Root> = PossiblePaths<Root>,
 >(root: Root, path: Path): DeepIndex<Root, Path> | undefined;
