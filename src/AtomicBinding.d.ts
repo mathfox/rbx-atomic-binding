@@ -1,3 +1,14 @@
+export type InferChildren<Root extends Instance> = {
+	-readonly [Key in keyof Root as Key extends string
+		? Root[Key] extends Instance
+			? // Weird trick to exclude `never` type
+				[Root[Key]] extends [never]
+				? never
+				: Key
+			: never
+		: never]: Root[Key] extends infer Child extends Instance ? Child : never;
+};
+
 export type InferDescendantsTree<Root extends Instance> = {
 	-readonly [Key in keyof Root as Key extends string
 		? Root[Key] extends Instance
@@ -13,10 +24,9 @@ export type InferDescendantsTree<Root extends Instance> = {
 
 export type PossiblePaths<
 	Root extends Instance,
-	ChildName extends
-		keyof InferDescendantsTree<Root> = keyof InferDescendantsTree<Root>,
+	ChildName extends keyof InferChildren<Root> = keyof InferChildren<Root>,
 > = ChildName extends string
-	? InferDescendantsTree<Root>[ChildName] extends Record<string, never>
+	? InferChildren<Root>[ChildName] extends Record<string, never>
 		? ChildName
 		: ChildName extends keyof Root
 			? Root[ChildName] extends Instance
