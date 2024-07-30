@@ -9,7 +9,7 @@ export type ExtractChildren<Root extends Instance> = {
 				? never
 				: Key
 			: never
-		: never]: Root[Key] extends infer Child extends Instance ? Child : never;
+		: never]: Root[Key];
 };
 
 export type InferDescendantsTree<Root extends Instance> = {
@@ -20,33 +20,40 @@ export type InferDescendantsTree<Root extends Instance> = {
 				? never
 				: Key
 			: never
-		: never]: Root[Key] extends infer Child extends Instance
-		? InferDescendantsTree<Child>
+		: never]: Root[Key] extends Instance
+		? InferDescendantsTree<Root[Key]>
 		: never;
 };
 
-export type PossiblePaths<
-	Root extends Instance,
-	ChildName extends keyof ExtractChildren<Root> = keyof ExtractChildren<Root>,
-> = ChildName extends string
-	? ExtractChildren<Root>[ChildName] extends Record<string, never>
-		? ChildName
-		: ChildName extends keyof Root
-			? Root[ChildName] extends Instance
-				? ChildName | `${ChildName}/${PossiblePaths<Root[ChildName]>}`
-				: never
-			: never
-	: never;
+export type EmptyObject = Record<string, never>;
+
+export type InstanceTree =
+	| {
+			[Key in string]: InstanceTree;
+	  }
+	| EmptyObject;
+
+export type ConstructPaths<Tree extends InstanceTree> = {
+	[Key in keyof Tree]: Key extends string
+		? Tree[Key] extends EmptyObject
+			? Key
+			: Key | `${Key}/${ConstructPaths<Tree[Key]>}`
+		: never;
+}[keyof Tree];
+
+export type Paths<Root extends Instance> = ConstructPaths<
+	InferDescendantsTree<Root>
+>;
 
 export type DeepIndex<
 	Root extends Instance,
-	Path extends PossiblePaths<Root>,
+	Path extends Paths<Root>,
 > = Path extends keyof Root
 	? Root[Path]
 	: Path extends `${infer ChildName}/${infer RestPath}`
 		? ChildName extends keyof Root
 			? Root[ChildName] extends Instance
-				? RestPath extends PossiblePaths<Root[ChildName]>
+				? RestPath extends Paths<Root[ChildName]>
 					? DeepIndex<Root[ChildName], RestPath>
 					: never
 				: never
@@ -54,7 +61,7 @@ export type DeepIndex<
 		: never;
 
 export type Manifest<Root extends Instance> = {
-	[Alias in string]: PossiblePaths<Root>;
+	[Alias in string]: Paths<Root>;
 };
 
 export type ManifestInstances<
