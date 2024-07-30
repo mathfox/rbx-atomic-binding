@@ -98,8 +98,3 @@ export type InferAliasInstance<
 > = A extends string
 	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
 	: never;
-
-export function getInstanceFromPath<
-	const Root extends Instance = Instance,
-	const Path extends PossiblePaths<Root> = PossiblePaths<Root>,
->(root: Root, path: Path): DeepIndex<Root, Path> | undefined;
