@@ -64,11 +64,15 @@ export type Manifest<Root extends Instance> = {
 	[Alias in string]: Paths<Root>;
 };
 
+export type BoundFunction<Root extends Instance, M extends Manifest<Root>> = (
+	instances: ManifestInstances<Root, M>,
+) => Callback | void;
+
 export type ManifestInstances<
 	Root extends Instance,
 	M extends Manifest<Root>,
 > = {
-	[K in keyof M]: DeepIndex<Root, M[K]>;
+	[Alias in keyof M]: DeepIndex<Root, M[Alias]>;
 } & {
 	root: Root;
 };
@@ -85,12 +89,12 @@ export interface AtomicBinding<
 }
 
 declare const AtomicBinding: new <
-	R extends Instance = Instance,
-	M extends Manifest<R> = Manifest<R>,
+	Root extends Instance = Instance,
+	M extends Manifest<Root> = Manifest<Root>,
 >(
 	manifest: M,
-	boundFn: (instances: ManifestInstances<R, M>) => Callback | undefined,
-) => AtomicBinding<R, M>;
+	boundFn: BoundFunction<Root, M>,
+) => AtomicBinding<Root, M>;
 
 export type InferManifestRoot<B extends object> = B extends AtomicBinding<
 	infer R
