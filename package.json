@@ -1,39 +1,43 @@
 {
-	"name": "@rbxts/atomic-binding",
-	"version": "0.2.9",
-	"description": "Types for AtomicBinding module",
-	"main": "out/AtomicBinding.lua",
-	"scripts": {
-		"build": "rbxtsc",
-		"watch": "rbxtsc -w",
-		"prepublishOnly": "bun run build",
-		"fmt": "bunx @biomejs/biome check --write"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/mathfox/rbx-atomic-binding.git"
-	},
-	"keywords": ["atomic", "binding", "atomic-binding", "instance"],
-	"author": {
-		"name": "Ivan Leontev",
-		"url": "https://github.com/mathfox"
-	},
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/mathfox/rbx-atomic-binding/issues"
-	},
-	"homepage": "https://github.com/mathfox/rbx-atomic-binding#readme",
-	"types": "out/AtomicBinding.d.ts",
-	"files": ["out", "!**/*.tsbuildinfo"],
-	"publishConfig": {
-		"access": "public"
-	},
-	"devDependencies": {
-		"roblox-ts": "^2.3.0-dev-8137656",
-		"typescript": "^5.5.2"
-	},
-	"dependencies": {
-		"@rbxts/compiler-types": "^2.3.0-types.1",
-		"@rbxts/types": "1.0.787"
-	}
+    "name": "@rbxts/atomic-binding",
+    "version": "0.3.0",
+    "description": "Types for AtomicBinding module",
+    "main": "src/init.luau",
+    "types": "src/index.d.ts",
+    "files": [
+        "src"
+    ],
+    "scripts": {
+        "fmt": "bunx @biomejs/biome check --write"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mathfox/rbx-atomic-binding.git"
+    },
+    "keywords": [
+        "atomic",
+        "binding",
+        "atomic-binding",
+        "instance"
+    ],
+    "author": {
+        "name": "Ivan Leontev",
+        "url": "https://github.com/mathfox"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/mathfox/rbx-atomic-binding/issues"
+    },
+    "homepage": "https://github.com/mathfox/rbx-atomic-binding#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "devDependencies": {
+        "roblox-ts": "^2.3.0-dev-8137656",
+        "typescript": "*"
+    },
+    "dependencies": {
+        "@rbxts/compiler-types": "^2.3.0-types.1",
+        "@rbxts/types": "1.0.787"
+    }
 }
