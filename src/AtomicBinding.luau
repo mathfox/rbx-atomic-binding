@@ -93,18 +93,6 @@ function AtomicBinding.new(manifest, boundFn)
 	}, AtomicBinding)
 end
 
--- This function is not included in the original version of the module
-function AtomicBinding:waitForAlias(root, alias)
-	local parsedPath = self._parsedManifest[alias]
-	local child = root
-
-	for _, childName in parsedPath do
-		child = child:WaitForChild(childName)
-	end
-
-	return child
-end
-
 function AtomicBinding:_startBoundFn(root, resolvedManifest)
 	local boundFn = self._boundFn
 	local dtorMap = self._dtorMap
