@@ -123,6 +123,8 @@ export type Paths<
 /**
  * Tries to index the instance from the provided `Path`.
  *
+ * The difference between {@link Index} type and this one is that it returns `never` instead of `undefined` when entry was not statically indexed.
+ *
  * This type has no recursion limit.
  */
 export type TryIndex<
