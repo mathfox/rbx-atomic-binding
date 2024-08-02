@@ -105,20 +105,28 @@ type Decr = [
 	100,
 ];
 
-export type Paths<
-	Root extends Instance,
-	Depth extends number = DEFAULT_DEPTH,
-> = Depth extends 0
+type Slashed<T> = [T] extends [never]
 	? never
-	: {
-			[Key in keyof Root]: [Root[Key]] extends [never]
-				? never
-				: Root[Key] extends Instance
-					? Key extends string
-						? `${Key}` | `${Key}/${Paths<Root[Key], Decr[Depth]>}`
-						: never
+	: T extends string
+		? `/${T}`
+		: never;
+
+/**
+ * Never pass a `Depth` value lower than 1. Doing so causes undefined behavior.
+ */
+export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
+	? never
+	: Root extends Instance
+		? {
+				[Key in keyof Root]: Root[Key] extends Instance
+					? [Root[Key]] extends [never]
+						? never
+						: Key extends string
+							? `${Key}` | `${Key}${Slashed<Paths<Root[Key], Decr[Depth]>>}`
+							: never
 					: never;
-		}[keyof Root];
+			}[keyof Root]
+		: never;
 
 /**
  * Tries to index the instance from the provided `Path`.
@@ -127,10 +135,7 @@ export type Paths<
  *
  * This type has no recursion limit.
  */
-export type TryIndex<
-	Root extends Instance,
-	Path extends string,
-> = Path extends keyof Root
+export type TryIndex<Root, Path extends string> = Path extends keyof Root
 	? Root[Path]
 	: Path extends `${infer ChildName}/${infer RestPath}`
 		? ChildName extends keyof Root
