@@ -86,6 +86,11 @@ export interface AtomicBinding<
 	unbindRoot(root: Root): void;
 
 	destroy(): void;
+
+	waitForAlias<const K extends keyof M>(
+		root: Root,
+		alias: K,
+	): DeepIndex<Root, M[K]>;
 }
 
 declare const AtomicBinding: new <
