@@ -120,6 +120,36 @@ export type Paths<
 					: never;
 		}[keyof Root];
 
+/**
+ * Tries to index the instance from the provided `Path`.
+ *
+ * This type has no recursion limit.
+ */
+export type TryIndex<
+	Root extends Instance,
+	Path extends string,
+> = Path extends keyof Root
+	? Root[Path]
+	: Path extends `${infer ChildName}/${infer RestPath}`
+		? ChildName extends keyof Root
+			? Root[ChildName] extends Instance
+				? TryIndex<Root[ChildName], RestPath>
+				: never
+			: never
+		: never;
+
+/**
+ * Should be used in combination with {@link Paths} type to create static path combinations.
+ *
+ * @example
+ * ```ts
+ * type PetsContainer = Index<Workspace, "__ASSETS/Pets"
+ *
+ * type PetPrefabPath = Paths<Index<PetsContainer, "Prefabs">>,
+ *
+ * type PetEffectPath = Paths<Index<PetsContainer, "Effects">>,
+ * ```
+ */
 export type Index<
 	Root extends Instance,
 	Path extends Paths<Root, Depth>,
