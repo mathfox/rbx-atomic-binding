@@ -134,9 +134,9 @@ export type TryIndex<
 		? ChildName extends keyof Root
 			? Root[ChildName] extends Instance
 				? TryIndex<Root[ChildName], RestPath>
-				: never
-			: never
-		: never;
+				: undefined
+			: undefined
+		: undefined;
 
 /**
  * Should be used in combination with {@link Paths} type to create static path combinations.
