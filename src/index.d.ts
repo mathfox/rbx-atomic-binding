@@ -1,14 +1,17 @@
-import type { DeepIndex, Paths } from "./AtomicBinding";
+import type { Index, Paths } from "./Shared";
 
+export * from "./Manifest";
+export * from "./Shared";
+export * from "./Util";
 export * from "./AtomicBinding";
 export * from "./AtomicBindingConfiguration";
 
 export function getInstanceFromPath<
 	const Root extends Instance = Instance,
 	const Path extends Paths<Root> = Paths<Root>,
->(root: Root, path: Path): DeepIndex<Root, Path> | undefined;
+>(root: Root, path: Path): Index<Root, Path> | undefined;
 
 export function waitForInstanceFromPath<
 	const Root extends Instance = Instance,
 	const Path extends Paths<Root> = Paths<Root>,
->(root: Root, path: Path): DeepIndex<Root, Path>;
+>(root: Root, path: Path): Index<Root, Path>;
