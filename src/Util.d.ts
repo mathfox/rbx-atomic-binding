@@ -1,5 +1,8 @@
 export type EmptyObject = Record<string, never>;
 
+/**
+ * Checks whether provided type has children.
+ */
 export type HasChildren<T extends Instance> =
 	ExtractChildren<T> extends EmptyObject ? true : false;
 
