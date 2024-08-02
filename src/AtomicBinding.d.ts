@@ -1,85 +1,37 @@
-/**
- * Omits all of the keys that do not represent the child Instance.
- */
-export type ExtractChildren<Root extends Instance> = {
-	[Key in keyof Root as Key extends string
-		? Root[Key] extends Instance
-			? // Weird trick to exclude `never` type
-				[Root[Key]] extends [never]
-				? never
-				: Key
-			: never
-		: never]: Root[Key];
-};
+import type { Manifest } from "./Manifest";
+import type { DEFAULT_DEPTH, Index, Paths } from "./Shared";
 
-export type InferDescendantsTree<Root extends Instance> = {
-	[Key in keyof Root as Key extends string
-		? Root[Key] extends Instance
-			? // Weird trick to exclude `never` type
-				[Root[Key]] extends [never]
-				? never
-				: Key
-			: never
-		: never]: Root[Key] extends Instance
-		? InferDescendantsTree<Root[Key]>
-		: never;
-};
-
-export type EmptyObject = Record<string, never>;
-
-export type InstanceTree =
-	| {
-			[Key in string]: InstanceTree;
-	  }
-	| EmptyObject;
-
-export type ConstructPaths<Tree extends InstanceTree> = {
-	[Key in keyof Tree]: Key extends string
-		? Tree[Key] extends EmptyObject
-			? Key
-			: Key | `${Key}/${ConstructPaths<Tree[Key]>}`
-		: never;
-}[keyof Tree];
-
-export type Paths<Root extends Instance> = ConstructPaths<
-	InferDescendantsTree<Root>
->;
-
-export type DeepIndex<
+export type BoundFunction<
 	Root extends Instance,
-	Path extends Paths<Root>,
-> = Path extends keyof Root
-	? Root[Path]
-	: Path extends `${infer ChildName}/${infer RestPath}`
-		? ChildName extends keyof Root
-			? Root[ChildName] extends Instance
-				? RestPath extends Paths<Root[ChildName]>
-					? DeepIndex<Root[ChildName], RestPath>
-					: never
-				: never
-			: never
-		: never;
-
-export type Manifest<Root extends Instance> = {
-	[Alias in string]: Paths<Root>;
-};
-
-export type BoundFunction<Root extends Instance, M extends Manifest<Root>> = (
-	instances: ManifestInstances<Root, M>,
-) => Callback | void;
+	Depth extends number = DEFAULT_DEPTH,
+	Base extends Record<string, Paths<Root, Depth>> = Record<
+		string,
+		Paths<RootImportData, Depth>
+	>,
+> = (
+	instances: ManifestInstances<Root, Depth, Base>,
+) => Callback | undefined | void;
 
 export type ManifestInstances<
 	Root extends Instance,
-	M extends Manifest<Root>,
+	Depth extends number = DEFAULT_DEPTH,
+	Base extends {
+		[Alias in string]: Paths<Root, Depth>;
+	} = {
+		[Alias in string]: Paths<Root, Depth>;
+	},
 > = {
-	[Alias in keyof M]: DeepIndex<Root, M[Alias]>;
-} & {
-	root: Root;
-};
+	[Alias in keyof Base]: Index<Root, Base[Alias], Depth>;
+} & { root: Root };
 
 export interface AtomicBinding<
-	Root extends Instance = Instance,
-	M extends Manifest<Root> = Manifest<Root>,
+	Root extends Instance,
+	Depth extends number = DEFAULT_DEPTH,
+	Base extends {
+		[Alias in string]: Paths<Root, Depth>;
+	} = {
+		[Alias in string]: Paths<Root, Depth>;
+	},
 > {
 	bindRoot(root: Root): void;
 
@@ -87,38 +39,33 @@ export interface AtomicBinding<
 
 	destroy(): void;
 
-	waitForAlias<const K extends keyof M>(
+	waitForAlias<const K extends keyof Base>(
 		root: Root,
 		alias: K,
-	): DeepIndex<Root, M[K]>;
+	): Index<Root, Base[K], Depth>;
 }
 
-declare const AtomicBinding: new <
-	Root extends Instance = Instance,
-	M extends Manifest<Root> = Manifest<Root>,
+export declare function createAtomicBinding<
+	const Root extends Instance,
+	const Depth extends number = DEFAULT_DEPTH,
+>(): <
+	const Base extends {
+		[Alias in string]: Paths<Root, Depth>;
+	} = {
+		[Alias in string]: Paths<Root, Depth>;
+	},
 >(
-	manifest: M,
-	boundFn: BoundFunction<Root, M>,
-) => AtomicBinding<Root, M>;
+	base: Base,
+	boundFn: BoundFunction<Root, Depth, Base>,
+) => AtomicBinding<Root, Depth, Base>;
 
-export type InferManifestRoot<B extends object> = B extends AtomicBinding<
-	infer R
->
-	? R
-	: never;
-
-export type InferManifest<B extends object> = B extends AtomicBinding<
-	infer R,
-	infer M
->
-	? M extends Manifest<R>
-		? M
-		: never
-	: never;
-
-export type InferAliasInstance<
-	B extends AtomicBinding,
-	A extends keyof InferManifest<B>,
-> = A extends string
-	? DeepIndex<InferManifestRoot<B>, InferManifest<B>[A]>
-	: never;
+export declare function createAtomicBinding<
+	const Root extends Instance,
+	const Depth extends number,
+	const Base extends {
+		[Alias in string]: Paths<Root, Depth>;
+	},
+>(
+	manifest: Manifest<Root, Depth, Base>,
+	boundFn: BoundFunction<Root, Depth, Base>,
+): AtomicBinding<Root, Depth, Base>;

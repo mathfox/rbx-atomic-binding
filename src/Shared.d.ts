@@ -122,14 +122,15 @@ export type Paths<
 
 export type Index<
 	Root extends Instance,
-	Path extends Paths<Root, DEFAULT_DEPTH>,
+	Path extends Paths<Root, Depth>,
+	Depth extends number = DEFAULT_DEPTH,
 > = Path extends keyof Root
 	? Root[Path]
 	: Path extends `${infer ChildName}/${infer RestPath}`
 		? ChildName extends keyof Root
 			? Root[ChildName] extends Instance
-				? RestPath extends Paths<Root[ChildName]>
-					? Index<Root[ChildName], RestPath>
+				? RestPath extends Paths<Root[ChildName], Depth>
+					? Index<Root[ChildName], RestPath, Depth>
 					: never
 				: never
 			: never

@@ -8,6 +8,7 @@
 ]]
 
 local AtomicBindingConfiguration = require(script.Parent.AtomicBindingConfiguration)
+local Manifest = require(script.Parent.Manifest)
 
 -- TODO: add types
 export type AtomicBinding = {}
@@ -68,6 +69,8 @@ local AtomicBinding = {}
 AtomicBinding.__index = AtomicBinding
 
 function AtomicBinding.new(manifest, boundFn)
+	assert(Manifest.is(manifest), "expected manifest")
+
 	local dtorMap = {} -- { [root] -> dtor }
 	local connections = {} -- { Connection, ... }
 	local rootInstToRootNode = {} -- { [root] -> rootNode }
@@ -76,7 +79,7 @@ function AtomicBinding.new(manifest, boundFn)
 	local parsedManifest = {} -- { [alias] = {Name, ...} }
 	local manifestSizeTarget = 1 -- Add 1 because root isn't explicitly on the manifest
 
-	for alias, rawPath in pairs(manifest) do
+	for alias, rawPath in pairs(manifest._manifest) do
 		parsedManifest[alias] = parsePath(rawPath)
 		manifestSizeTarget += 1
 	end
@@ -319,6 +322,16 @@ end
 local exports = {
 	AtomicBinding = AtomicBinding,
 }
+
+function exports.createAtomicBinding(manifest, boundFn)
+	if Manifest.is(manifest) then
+		return AtomicBinding.new(manifest, boundFn)
+	end
+
+	return function(base, boundFn)
+		return AtomicBinding.new(Manifest.createManifest()(base), boundFn)
+	end
+end
 
 table.freeze(exports)
 
