@@ -16,24 +16,36 @@ type Character = Model & {
 	HumanoidRootPart: BasePart;
 };
 
-const characterManifest = {
-	animator: "Humanoid/Animator",
-	humanoid: "Humanoid",
-	rootPart: "HumanoidRootPart",
-} satisfies Manifest<Character>;
+// Notice how we first invoke an empty function.
+const bindingFromBase = createAtomicBinding<Character>()({
+    animator: "Humanoid/Animator",
+    humanoid: "Humanoid",
+    rootPart: "HumanoidRootPart",
+}, ({ root, animator, humanoid, rootPart }) => {
+    // do something with "Animator"
+    // do something with "Humanoid"
+    // do something with "HumanoidRootPart"
 
-const binding = new AtomicBinding<Character, typeof characterManifest>(
-	characterManifest,
-	({ root, animator, humanoid, rootPart }) => {
-		// do something with "Animator"
-		// do something with "Humanoid"
-		// do something with "HumanoidRootPart"
+    return () => {
+        // Disconnect all "instances" related connections
+    };
+});
 
-		return () => {
-			// Disconnect all "instances" related connections
-		};
-	},
-);
+const manifest = createManifest<Character>({
+    animator: "Humanoid/Animator",
+    humanoid: "Humanoid",
+    rootPart: "HumanoidRootPart",
+})
+
+const binding = createAtomicBinding(manifest, ({ root, animator, humanoid, rootPart }) => {
+    // do something with "Animator"
+    // do something with "Humanoid"
+    // do something with "HumanoidRootPart"
+
+    return () => {
+        // Disconnect all "instances" related connections
+    };
+})
 
 const character = {} as Character
 
@@ -47,7 +59,7 @@ binding.destroy();
 
 ```
 
-The "getInstanceFromRawPath" function is quite helpful when we just want to ensure that the instance exists at the provided path.
+The "getInstanceFromPath" function is quite helpful when we just want to ensure that the instance exists at the provided path.
 ```ts
 type SomeModel = Model & {
     Particles: Folder & {
@@ -58,8 +70,10 @@ type SomeModel = Model & {
 
 const someModel = {} as SomeModel
 
-const particle = getInstanceFromRawPath(someModel, "Particles/Particle1")
+const particle = getInstanceFromPath(someModel, "Particles/Particle1")
 if (!particle) {
     return
 }
 ```
+
+The `waitForInstanceFromPath` function does the same as the `getInstanceFromPath` function, but instead utilizes `WaitForChild` method of the Instance. This means that the return type will never be `undefined`.
