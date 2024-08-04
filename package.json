@@ -12,7 +12,7 @@
 		"type": "git",
 		"url": "git+https://github.com/mathfox/rbx-atomic-binding.git"
 	},
-	"keywords": ["atomic", "binding", "atomic-binding", "instance"],
+	"keywords": ["roblox", "atomic", "binding", "atomic-binding", "instance"],
 	"author": {
 		"name": "Ivan Leontev",
 		"url": "https://github.com/mathfox"
@@ -27,10 +27,10 @@
 	},
 	"devDependencies": {
 		"roblox-ts": "^2.3.0-dev-8137656",
-		"typescript": "*"
+		"typescript": "^5.6.0-dev.20240804"
 	},
 	"dependencies": {
 		"@rbxts/compiler-types": "^2.3.0-types.1",
-		"@rbxts/types": "1.0.787"
+		"@rbxts/types": "^1.0.794"
 	}
 }
