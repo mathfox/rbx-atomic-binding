@@ -25,13 +25,18 @@ export type ManifestInstances<
 	[Alias in keyof Base]: Index<Root, Base[Alias], Depth>;
 } & { root: Root };
 
+/**
+ * Infers the {@link ManifestInstances} type either from {@link AtomicBinding} or {@link Manifest}.
+ */
 export type InferManifestInstances<T> = T extends AtomicBinding<
 	infer Root,
 	infer Depth,
 	infer Base
 >
 	? ManifestInstances<Root, Depth, Base>
-	: never;
+	: T extends Manifest<infer Root, infer Depth, infer Base>
+		? ManifestInstances<Root, Depth, Base>
+		: never;
 
 export interface AtomicBinding<
 	Root extends Instance = Instance,
