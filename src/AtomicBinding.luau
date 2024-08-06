@@ -78,7 +78,7 @@ local AtomicBinding = {}
 AtomicBinding.__index = AtomicBinding
 
 function AtomicBinding.new(manifest, boundFn)
-	assert(Manifest.is(manifest), "expected manifest")
+	assert(Manifest.isManifest(manifest), "expected manifest")
 
 	local dtorMap = {} -- { [root] -> dtor }
 	local connections = {} -- { Connection, ... }
@@ -333,13 +333,17 @@ local exports = {
 }
 
 function exports.createAtomicBinding(manifest, boundFn)
-	if Manifest.is(manifest) then
+	if Manifest.isManifest(manifest) then
 		return AtomicBinding.new(manifest, boundFn)
 	end
 
 	return function(base, boundFn)
 		return AtomicBinding.new(Manifest.createManifest()(base), boundFn)
 	end
+end
+
+function exports.isAtomicBinding(value: unknown): boolean
+	return type(value) == "table" and getmetatable(value :: any) == AtomicBinding
 end
 
 table.freeze(exports)

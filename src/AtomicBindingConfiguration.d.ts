@@ -1,4 +1,4 @@
-export declare type AtomicBindingConfiguration = {
+export type AtomicBindingConfiguration = {
 	/**
 	 * @default false
 	 */
@@ -8,11 +8,11 @@ export declare type AtomicBindingConfiguration = {
 /**
  * Returns a copied version of the configuration.
  */
-export declare function getGlobalConfiguration(): AtomicBindingConfiguration;
+export function getGlobalConfiguration(): AtomicBindingConfiguration;
 
 /**
  * Provided `newConfiguration` is cloned to avoid further mutations.
  */
-export declare function setGlobalConfiguration(
+export function setGlobalConfiguration(
 	newConfiguration: AtomicBindingConfiguration,
 ): void;

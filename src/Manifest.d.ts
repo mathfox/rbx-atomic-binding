@@ -18,9 +18,11 @@ export type Manifest<
 	__depth: Depth;
 };
 
-export declare function createManifest<
+export function createManifest<
 	const Root extends Instance,
 	const Depth extends number = DEFAULT_DEPTH,
 >(): <const Base extends Record<string, Paths<Root, Depth>>>(
 	base: Base,
 ) => Manifest<Root, Depth, Base>;
+
+export function isManifest(value: unknown): value is Manifest;

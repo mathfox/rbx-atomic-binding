@@ -16,7 +16,7 @@ export type Manifest = typeof(setmetatable(
 
 local exports = {}
 
-function exports.is(value: unknown): boolean
+function exports.isManifest(value: unknown): boolean
 	return type(value) == "table" and getmetatable(value :: any) == Manifest.prototype
 end
 

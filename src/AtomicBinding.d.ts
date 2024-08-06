@@ -54,7 +54,7 @@ export interface AtomicBinding<
 	): Index<Root, Base[K], Depth>;
 }
 
-export declare function createAtomicBinding<
+export function createAtomicBinding<
 	const Root extends Instance,
 	const Depth extends number = DEFAULT_DEPTH,
 >(): <
@@ -68,7 +68,7 @@ export declare function createAtomicBinding<
 	boundFn: BoundFunction<Root, Depth, Base>,
 ) => AtomicBinding<Root, Depth, Base>;
 
-export declare function createAtomicBinding<
+export function createAtomicBinding<
 	const Root extends Instance,
 	const Depth extends number,
 	const Base extends {
@@ -78,3 +78,5 @@ export declare function createAtomicBinding<
 	manifest: Manifest<Root, Depth, Base>,
 	boundFn: BoundFunction<Root, Depth, Base>,
 ): AtomicBinding<Root, Depth, Base>;
+
+export function isAtomicBinding(value: unknown): value is AtomicBinding;
