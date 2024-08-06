@@ -25,8 +25,16 @@ export type ManifestInstances<
 	[Alias in keyof Base]: Index<Root, Base[Alias], Depth>;
 } & { root: Root };
 
+export type InferManifestInstances<T> = T extends AtomicBinding<
+	infer Root,
+	infer Depth,
+	infer Base
+>
+	? ManifestInstances<Root, Depth, Base>
+	: never;
+
 export interface AtomicBinding<
-	Root extends Instance,
+	Root extends Instance = Instance,
 	Depth extends number = DEFAULT_DEPTH,
 	Base extends {
 		[Alias in string]: Paths<Root, Depth>;
