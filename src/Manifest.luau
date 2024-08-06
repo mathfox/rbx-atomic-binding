@@ -5,10 +5,19 @@ local Manifest = {}
 Manifest.prototype = {}
 Manifest.prototype.__index = Manifest.prototype
 
+export type Manifest = typeof(setmetatable(
+	{} :: {
+		_manifest: {
+			[string]: string,
+		},
+	},
+	typeof(Manifest.prototype)
+))
+
 local exports = {}
 
-function exports.is(value)
-	return type(value) == "table" and getmetatable(value) == Manifest.prototype
+function exports.is(value: unknown): boolean
+	return type(value) == "table" and getmetatable(value :: any) == Manifest.prototype
 end
 
 function exports.createManifest()

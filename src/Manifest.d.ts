@@ -8,7 +8,12 @@ export type Manifest<
 		Paths<Root, Depth>
 	>,
 > = {
-	__base: Base;
+	/**
+	 * @deprecated
+	 */
+	readonly __nominal: unique symbol;
+
+	_manifest: Base;
 	__root: Root;
 	__depth: Depth;
 };
