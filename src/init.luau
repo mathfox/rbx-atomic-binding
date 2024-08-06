@@ -1,15 +1,25 @@
-local AtomicBinding = require(script.AtomicBinding)
+--!strict
+--!native
+
 local AtomicBindingConfiguration = require(script.AtomicBindingConfiguration)
+local AtomicBinding = require(script.AtomicBinding)
+local Manifest = require(script.Manifest)
 
 export type AtomicBinding = AtomicBinding.AtomicBinding
 export type AtomicBindingConfiguration = AtomicBindingConfiguration.AtomicBindingConfiguration
 
 local exports = {
 	AtomicBinding = AtomicBinding,
+	createAtomicBinding = AtomicBinding.createAtomicBinding,
+	isAtomicBinding = AtomicBinding.isAtomicBinding,
+
 	AtomicBindingConfiguration = AtomicBindingConfiguration,
 
-    getGlobalConfiguration = AtomicBindingConfiguration.getGlobalConfiguration,
-    setGlobalConfiguration = AtomicBindingConfiguration.setGlobalConfiguration,
+	getGlobalConfiguration = AtomicBindingConfiguration.getGlobalConfiguration,
+	setGlobalConfiguration = AtomicBindingConfiguration.setGlobalConfiguration,
+
+	createManifest = Manifest.createManifest,
+	isManifest = Manifest.isManifest,
 }
 
 function exports.getInstanceFromPath(root: Instance, path: string): Instance | nil
