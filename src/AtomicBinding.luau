@@ -13,6 +13,15 @@ local Manifest = require(script.Parent.Manifest)
 -- TODO: add types
 export type AtomicBinding = {}
 
+export type Node = {
+	alias: string,
+	instance: Instance | nil,
+	children: {
+		[string]: Node,
+	},
+	connections: { RBXScriptConnection },
+}
+
 local ROOT_ALIAS = "root"
 
 local function parsePath(pathStr: string)
@@ -27,7 +36,7 @@ local function parsePath(pathStr: string)
 	return pathArray
 end
 
-local function isManifestResolved(resolvedManifest, manifestSizeTarget)
+local function isManifestResolved(resolvedManifest, manifestSizeTarget: number): boolean
 	local manifestSize = 0
 	for _ in pairs(resolvedManifest) do
 		manifestSize += 1
@@ -37,7 +46,7 @@ local function isManifestResolved(resolvedManifest, manifestSizeTarget)
 	return manifestSize == manifestSizeTarget
 end
 
-local function unbindNodeDescend(node, resolvedManifest)
+local function unbindNodeDescend(node: Node, resolvedManifest)
 	if node.instance == nil then
 		return -- Do not try to unbind nodes that are already unbound
 	end
@@ -46,7 +55,7 @@ local function unbindNodeDescend(node, resolvedManifest)
 
 	local connections = node.connections
 	if connections then
-		for _, connection in ipairs(connections) do
+		for _, connection in connections do
 			connection:Disconnect()
 		end
 
@@ -79,7 +88,7 @@ function AtomicBinding.new(manifest, boundFn)
 	local parsedManifest = {} -- { [alias] = {Name, ...} }
 	local manifestSizeTarget = 1 -- Add 1 because root isn't explicitly on the manifest
 
-	for alias, rawPath in pairs(manifest._manifest) do
+	for alias, rawPath in manifest._manifest do
 		parsedManifest[alias] = parsePath(rawPath)
 		manifestSizeTarget += 1
 	end
@@ -97,7 +106,7 @@ function AtomicBinding.new(manifest, boundFn)
 end
 
 -- This function is not included in the original version of the module
-function AtomicBinding:waitForAlias(root, alias)
+function AtomicBinding:waitForAlias(root: Instance, alias: string)
 	local parsedPath = self._parsedManifest[alias]
 	local child = root
 
@@ -108,7 +117,7 @@ function AtomicBinding:waitForAlias(root, alias)
 	return child
 end
 
-function AtomicBinding:_startBoundFn(root, resolvedManifest)
+function AtomicBinding:_startBoundFn(root: Instance, resolvedManifest)
 	local boundFn = self._boundFn
 	local dtorMap = self._dtorMap
 
@@ -124,7 +133,7 @@ function AtomicBinding:_startBoundFn(root, resolvedManifest)
 	end
 end
 
-function AtomicBinding:_stopBoundFn(root)
+function AtomicBinding:_stopBoundFn(root: Instance)
 	local dtorMap = self._dtorMap
 
 	local dtor = dtorMap[root]
@@ -134,7 +143,7 @@ function AtomicBinding:_stopBoundFn(root)
 	end
 end
 
-function AtomicBinding:bindRoot(root)
+function AtomicBinding:bindRoot(root: Instance)
 	local profileDebugging = AtomicBindingConfiguration._currentConfiguration.profileDebugging
 	if profileDebugging then
 		debug.profilebegin("AtomicBinding:BindRoot")
@@ -250,7 +259,7 @@ function AtomicBinding:bindRoot(root)
 				end
 			end
 
-			for _, child in ipairs(instance:GetChildren()) do
+			for _, child in instance:GetChildren() do
 				processAddChild(child)
 			end
 
@@ -274,7 +283,7 @@ function AtomicBinding:bindRoot(root)
 	end
 end
 
-function AtomicBinding:unbindRoot(root)
+function AtomicBinding:unbindRoot(root: Instance)
 	local rootInstToRootNode = self._rootInstToRootNode
 	local rootInstToManifest = self._rootInstToManifest
 
@@ -301,7 +310,7 @@ function AtomicBinding:destroy()
 	end
 	table.clear(self._dtorMap)
 
-	for _, conn in ipairs(self._connections) do
+	for _, conn in self._connections do
 		conn:Disconnect()
 	end
 	table.clear(self._connections)
