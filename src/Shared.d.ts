@@ -135,7 +135,7 @@ export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
  *
  * This type has no recursion limit.
  */
-export type TryIndex<Root, Path extends string> = Path extends keyof Root
+export type TryIndex<Root, Path> = Path extends keyof Root
 	? Root[Path]
 	: Path extends `${infer ChildName}/${infer RestPath}`
 		? ChildName extends keyof Root
