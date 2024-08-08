@@ -22,7 +22,7 @@ export function getInstanceFromPath<
 export function getInstanceFromPath<
 	const Root extends Instance = Instance,
 	const TryPath extends string = string,
->(root: Root, tryPath: TryPath): TryIndex<Root, TryPath> | undefined;
+>(root: Root, tryPath: TryPath): TryIndex<Root, TryPath> | Instance | undefined;
 
 /**
  * This function utilizes `WaitForChild` method of the instance to recursively await the requested instance.
