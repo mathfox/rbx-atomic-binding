@@ -3,7 +3,9 @@ export type EmptyObject = Record<string, never>;
 /**
  * Checks whether provided type has children.
  */
-export type HasChildren<T> = ExtractChildren<T> extends EmptyObject ? true : false;
+export type HasChildren<T> = ExtractChildren<T> extends EmptyObject
+	? true
+	: false;
 
 /**
  * Omits all of the keys that do not represent the child Instance.
@@ -33,4 +35,6 @@ export type ExtractDescendants<Root> = {
 		: never]: ExtractDescendants<Root[Key]>;
 };
 
-export type InferDescendant<T> = T extends ExtractDescendants<infer A> ? A : never;
+export type InferDescendant<T> = T extends ExtractDescendants<infer A>
+	? A
+	: never;

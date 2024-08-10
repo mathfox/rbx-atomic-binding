@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/atomic-binding",
-	"version": "0.6.0",
+	"version": "0.7.0",
 	"description": "Types for AtomicBinding module",
 	"main": "src/init.lua",
 	"types": "src/index.d.ts",
@@ -12,7 +12,14 @@
 		"type": "git",
 		"url": "git+https://github.com/mathfox/rbx-atomic-binding.git"
 	},
-	"keywords": ["roblox", "atomic", "binding", "atomic-binding", "instance"],
+	"keywords": [
+		"roblox",
+		"roblox-ts",
+		"atomic",
+		"binding",
+		"atomic-binding",
+		"instance"
+	],
 	"author": {
 		"name": "Ivan Leontev",
 		"url": "https://github.com/mathfox"

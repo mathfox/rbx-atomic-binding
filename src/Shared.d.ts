@@ -105,7 +105,11 @@ type Decr = [
 	100,
 ];
 
-type Slashed<T> = [T] extends [never] ? never : T extends string ? `/${T}` : never;
+type Slashed<T> = [T] extends [never]
+	? never
+	: T extends string
+		? `/${T}`
+		: never;
 
 /**
  * Never pass a `Depth` value lower than 1. Doing so causes undefined behavior.
@@ -149,4 +153,6 @@ export type Index<Root, Path> = Path extends keyof Root
 /**
  * Tries to index the instance from the provided `Path`, otherwise returns `undefined`
  */
-export type TryIndex<Root, Path> = [Index<Root, Path>] extends [never] ? undefined : Index<Root, Path>;
+export type TryIndex<Root, Path> = [Index<Root, Path>] extends [never]
+	? undefined
+	: Index<Root, Path>;

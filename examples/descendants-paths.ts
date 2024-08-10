@@ -1,4 +1,4 @@
-import { type ExtractDescendants, type InferDescendant } from "..";
+import type { ExtractDescendants, InferDescendant } from "..";
 
 interface CustomWorkspace extends WorldRoot {
 	__ASSETS: Model & {
@@ -31,5 +31,6 @@ interface CustomWorkspace extends WorldRoot {
 	};
 }
 
-type DescendantPath = ExtractDescendants<CustomWorkspace>["__ASSETS"]["Eggs"]["Prefabs"]["Egg1"];
+type DescendantPath =
+	ExtractDescendants<CustomWorkspace>["__ASSETS"]["Eggs"]["Prefabs"]["Egg1"];
 type Value = InferDescendant<DescendantPath>;
