@@ -105,11 +105,7 @@ type Decr = [
 	100,
 ];
 
-type Slashed<T> = [T] extends [never]
-	? never
-	: T extends string
-		? `/${T}`
-		: never;
+type Slashed<T> = [T] extends [never] ? never : T extends string ? `/${T}` : never;
 
 /**
  * Never pass a `Depth` value lower than 1. Doing so causes undefined behavior.
@@ -129,23 +125,6 @@ export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
 		: never;
 
 /**
- * Tries to index the instance from the provided `Path`.
- *
- * The difference between {@link Index} type and this one is that it returns `never` instead of `undefined` when entry was not statically indexed.
- *
- * This type has no recursion limit.
- */
-export type TryIndex<Root, Path> = Path extends keyof Root
-	? Root[Path]
-	: Path extends `${infer ChildName}/${infer RestPath}`
-		? ChildName extends keyof Root
-			? Root[ChildName] extends Instance
-				? TryIndex<Root[ChildName], RestPath>
-				: undefined
-			: undefined
-		: undefined;
-
-/**
  * Should be used in combination with {@link Paths} type to create static path combinations.
  *
  * @example
@@ -157,18 +136,17 @@ export type TryIndex<Root, Path> = Path extends keyof Root
  * type PetEffectPath = Paths<Index<PetsContainer, "Effects">>,
  * ```
  */
-export type Index<
-	Root extends Instance,
-	Path extends Paths<Root, Depth>,
-	Depth extends number = DEFAULT_DEPTH,
-> = Path extends keyof Root
+export type Index<Root, Path> = Path extends keyof Root
 	? Root[Path]
 	: Path extends `${infer ChildName}/${infer RestPath}`
 		? ChildName extends keyof Root
 			? Root[ChildName] extends Instance
-				? RestPath extends Paths<Root[ChildName], Depth>
-					? Index<Root[ChildName], RestPath, Depth>
-					: never
+				? Index<Root[ChildName], RestPath>
 				: never
 			: never
 		: never;
+
+/**
+ * Tries to index the instance from the provided `Path`, otherwise returns `undefined`
+ */
+export type TryIndex<Root, Path> = [Index<Root, Path>] extends [never] ? undefined : Index<Root, Path>;
