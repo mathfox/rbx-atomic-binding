@@ -22,7 +22,7 @@ export type ManifestInstances<
 		[Alias in string]: Paths<Root, Depth>;
 	},
 > = {
-	[Alias in keyof Base]: Index<Root, Base[Alias], Depth>;
+	[Alias in keyof Base]: Index<Root, Base[Alias]>;
 } & { root: Root };
 
 /**
@@ -56,7 +56,7 @@ export interface AtomicBinding<
 	waitForAlias<const K extends keyof Base>(
 		root: Root,
 		alias: K,
-	): Index<Root, Base[K], Depth>;
+	): Index<Root, Base[K]>;
 }
 
 export function createAtomicBinding<
