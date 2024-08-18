@@ -1,10 +1,4 @@
-import type {
-	ExtractDescendants,
-	Index,
-	IndexDescendant,
-	Paths,
-	TryIndex,
-} from "..";
+import type { Paths, TryIndex } from "..";
 
 interface CustomWorkspace extends WorldRoot {
 	__ASSETS: Model & {
