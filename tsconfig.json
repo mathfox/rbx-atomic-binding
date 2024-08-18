@@ -10,6 +10,7 @@
 		"strict": true,
 		"target": "ESNext",
 		"typeRoots": ["node_modules/@rbxts"],
-		"rootDirs": ["src", "examples"]
+		"rootDirs": ["src", "examples"],
+		"rootDir": "src"
 	}
 }
