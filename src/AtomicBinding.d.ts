@@ -11,7 +11,7 @@ export type BoundFunction<
 > = (
 	instances: ManifestInstances<Root, Depth, Base>,
 	// biome-ignore lint/suspicious/noConfusingVoidType: Allow implicit `nil` return.
-) => Callback | undefined | void;
+) => Callback | void;
 
 export type ManifestInstances<
 	Root extends Instance,
