@@ -5,6 +5,7 @@
 local AtomicBindingConfiguration = require(script.AtomicBindingConfiguration)
 local AtomicBinding = require(script.AtomicBinding)
 local Manifest = require(script.Manifest)
+local parsePath = require(script.parsePath)
 
 export type AtomicBinding = AtomicBinding.AtomicBinding
 export type AtomicBindingConfiguration = AtomicBindingConfiguration.AtomicBindingConfiguration
@@ -21,12 +22,13 @@ local exports = {
 
 	createManifest = Manifest.createManifest,
 	isManifest = Manifest.isManifest,
+	parsePath = parsePath,
 }
 
 function exports.getInstanceFromPath(root: Instance, path: string): Instance | nil
 	local instance: Instance | nil = root
 
-	for _, node in string.split(path, "/") do
+	for _, node in parsePath(path) do
 		instance = (instance :: Instance):FindFirstChild(node)
 
 		if instance == nil then
@@ -40,7 +42,7 @@ end
 function exports.waitForInstanceFromPath(root: Instance, path: string): Instance
 	local instance: Instance = root
 
-	for _, node in string.split(path, "/") do
+	for _, node in parsePath(path) do
 		instance = instance:WaitForChild(node)
 	end
 

@@ -10,6 +10,7 @@
 
 local AtomicBindingConfiguration = require(script.Parent.AtomicBindingConfiguration)
 local Manifest = require(script.Parent.Manifest)
+local parsePath = require(script.Parent.parsePath)
 
 -- TODO: add types
 export type AtomicBinding = {}
@@ -26,21 +27,6 @@ export type Node = {
 export type ResolvedManifest = {}
 
 local ROOT_ALIAS = "root"
-
---- Parsed the provided `path` into an array of strings.
---- This function also excludes any empty string entries from the result array.
---- That means that the values `child_1/child_2` and `child_1/child_2/` will have exactly the same output.
-local function parsePath(path: string): { string }
-	local pathArray = string.split(path, "/")
-
-	for index = #pathArray, 1, -1 do
-		if pathArray[index] == "" then
-			table.remove(pathArray, index)
-		end
-	end
-
-	return pathArray
-end
 
 local function isManifestResolved(resolvedManifest, manifestSizeTarget: number): boolean
 	local manifestSize = 0
@@ -336,14 +322,15 @@ end
 
 local exports = {
 	AtomicBinding = AtomicBinding,
+	parsePath = parsePath,
 }
 
-function exports.createAtomicBinding(manifest, boundFn)
-	if Manifest.isManifest(manifest) then
-		return AtomicBinding.new(manifest, boundFn)
+function exports.createAtomicBinding(value: unknown, boundFn)
+	if Manifest.isManifest(value) then
+		return AtomicBinding.new(value :: Manifest.Manifest, boundFn)
 	end
 
-	return function(base, boundFn)
+	return function(base: Manifest.ManifestBase, boundFn)
 		return AtomicBinding.new(Manifest.createManifest()(base), boundFn)
 	end
 end
@@ -351,7 +338,5 @@ end
 function exports.isAtomicBinding(value: unknown): boolean
 	return type(value) == "table" and getmetatable(value :: any) == AtomicBinding
 end
-
-table.freeze(exports)
 
 return exports
