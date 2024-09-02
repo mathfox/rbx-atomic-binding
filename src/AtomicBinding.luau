@@ -96,9 +96,24 @@ function AtomicBinding.new(manifest, boundFn)
 		_rootInstToManifest = rootInstToManifest,
 	}, AtomicBinding)
 end
+-- This function is not included in the original version of the module
+function AtomicBinding:getInstanceFromAlias(root: Instance, alias: string): Instance | nil
+	local parsedPath = self._parsedManifest[alias]
+	local child = root
+
+	for _, childName in parsedPath do
+		child = child:FindFirstChild(childName)
+
+		if not child then
+			return nil
+		end
+	end
+
+	return child
+end
 
 -- This function is not included in the original version of the module
-function AtomicBinding:waitForAlias(root: Instance, alias: string)
+function AtomicBinding:waitForInstanceFromAlias(root: Instance, alias: string): Instance
 	local parsedPath = self._parsedManifest[alias]
 	local child = root
 

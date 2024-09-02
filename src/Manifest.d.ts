@@ -13,6 +13,8 @@ export type Manifest<
 	readonly __nominal: unique symbol;
 
 	_base: TBase;
+	__root: TRoot;
+	__depth: TDepth;
 };
 
 export function createManifest<

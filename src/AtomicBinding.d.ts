@@ -1,11 +1,11 @@
-import type { Manifest } from "./Manifest";
-import type { DEFAULT_DEPTH, Index, Paths } from "./Shared";
+import type { Manifest, ManifestBase } from "./Manifest";
+import type { DEFAULT_DEPTH, Index, Paths, TryIndex } from "./Shared";
 
 export type BoundFunction<
 	TRoot extends Instance = Instance,
-	Base extends Record<string, string> = Record<string, string>,
+	TBase extends ManifestBase = ManifestBase,
 > = (
-	instances: ManifestInstances<TRoot, Base>,
+	instances: ManifestInstances<TRoot, TBase>,
 	// biome-ignore lint/suspicious/noConfusingVoidType: Allow implicit `nil` return.
 ) => Callback | void;
 
@@ -18,7 +18,7 @@ export type ManifestInstances<
 
 export interface AtomicBinding<
 	TRoot extends Instance = Instance,
-	TBase extends Record<string, string> = Record<string, string>,
+	TBase extends ManifestBase = ManifestBase,
 > {
 	bindRoot(root: TRoot): void;
 
@@ -26,35 +26,37 @@ export interface AtomicBinding<
 
 	destroy(): void;
 
-	waitForAlias<const TAlias extends keyof TBase>(
+	getInstanceFromAlias<const TAlias extends keyof TBase>(
+		root: TRoot,
+		alias: TAlias,
+	): TryIndex<TRoot, TBase[TAlias]> | undefined;
+
+	waitForInstanceFromAlias<const TAlias extends keyof TBase>(
 		root: TRoot,
 		alias: TAlias,
 	): Index<TRoot, TBase[TAlias]>;
 }
 
 export function createAtomicBinding<
-	const Root extends Instance,
-	const Depth extends number = DEFAULT_DEPTH,
+	const TRoot extends Instance = Instance,
+	const TDepth extends number = DEFAULT_DEPTH,
 >(): <
-	const Base extends {
-		[Alias in string]: Paths<Root, Depth>;
-	} = {
-		[Alias in string]: Paths<Root, Depth>;
-	},
+	const TBase extends Record<string, Paths<TRoot, TDepth>> = Record<
+		string,
+		Paths<TRoot, TDepth>
+	>,
 >(
-	base: Base,
-	boundFn: BoundFunction<Root, Base>,
-) => AtomicBinding<Root, Base>;
+	base: TBase,
+	boundFn: BoundFunction<TRoot, TBase>,
+) => AtomicBinding<TRoot, TBase>;
 
 export function createAtomicBinding<
-	const Root extends Instance,
-	const Depth extends number,
-	const Base extends {
-		[Alias in string]: Paths<Root, Depth>;
-	},
+	const TRoot extends Instance,
+	const TDepth extends number,
+	const Base extends Record<string, Paths<TRoot, TDepth>>,
 >(
-	manifest: Manifest<Root, Depth, Base>,
-	boundFn: BoundFunction<Root, Base>,
-): AtomicBinding<Root, Base>;
+	manifest: Manifest<TRoot, TDepth, Base>,
+	boundFn: BoundFunction<TRoot, Base>,
+): AtomicBinding<TRoot, Base>;
 
 export function isAtomicBinding(value: unknown): value is AtomicBinding;
