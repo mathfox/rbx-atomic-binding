@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/atomic-binding",
-	"version": "0.7.2",
+	"version": "0.8.0",
 	"description": "Types for AtomicBinding module",
 	"main": "src/init.lua",
 	"types": "src/index.d.ts",
