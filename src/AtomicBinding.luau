@@ -23,14 +23,19 @@ export type Node = {
 	connections: { RBXScriptConnection },
 }
 
+export type ResolvedManifest = {}
+
 local ROOT_ALIAS = "root"
 
-local function parsePath(pathStr: string)
-	local pathArray = string.split(pathStr, "/")
+--- Parsed the provided `path` into an array of strings.
+--- This function also excludes any empty string entries from the result array.
+--- That means that the values `child_1/child_2` and `child_1/child_2/` will have exactly the same output.
+local function parsePath(path: string): { string }
+	local pathArray = string.split(path, "/")
 
-	for idx = #pathArray, 1, -1 do
-		if pathArray[idx] == "" then
-			table.remove(pathArray, idx)
+	for index = #pathArray, 1, -1 do
+		if pathArray[index] == "" then
+			table.remove(pathArray, index)
 		end
 	end
 
@@ -39,7 +44,7 @@ end
 
 local function isManifestResolved(resolvedManifest, manifestSizeTarget: number): boolean
 	local manifestSize = 0
-	for _ in pairs(resolvedManifest) do
+	for _ in resolvedManifest do
 		manifestSize += 1
 	end
 
@@ -89,7 +94,7 @@ function AtomicBinding.new(manifest, boundFn)
 	local parsedManifest = {} -- { [alias] = {Name, ...} }
 	local manifestSizeTarget = 1 -- Add 1 because root isn't explicitly on the manifest
 
-	for alias, rawPath in manifest._manifest do
+	for alias, rawPath in manifest._base do
 		parsedManifest[alias] = parsePath(rawPath)
 		manifestSizeTarget += 1
 	end

@@ -6,14 +6,13 @@ local Manifest = {}
 Manifest.prototype = {}
 Manifest.prototype.__index = Manifest.prototype
 
-export type Manifest = typeof(setmetatable(
-	{} :: {
-		_manifest: {
-			[string]: string,
-		},
-	},
-	typeof(Manifest.prototype)
-))
+export type ManifestBase = { [string]: string }
+
+export type ManifestProperties = {
+	_base: ManifestBase,
+}
+
+export type Manifest = typeof(setmetatable({} :: ManifestProperties, (nil :: any) :: typeof(Manifest.prototype)))
 
 local exports = {}
 
@@ -22,15 +21,13 @@ function exports.isManifest(value: unknown): boolean
 end
 
 function exports.createManifest()
-	return function(manifest)
+	return function(base: ManifestBase): Manifest
 		local self = setmetatable({
-			_manifest = manifest,
+			_base = base,
 		}, Manifest.prototype)
 
 		return self
 	end
 end
-
-table.freeze(exports)
 
 return exports

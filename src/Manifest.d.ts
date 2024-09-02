@@ -13,7 +13,7 @@ export type Manifest<
 	 */
 	readonly __nominal: unique symbol;
 
-	_manifest: Base;
+	_base: Base;
 	__root: Root;
 	__depth: Depth;
 };

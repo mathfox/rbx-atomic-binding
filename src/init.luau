@@ -47,6 +47,4 @@ function exports.waitForInstanceFromPath(root: Instance, path: string): Instance
 	return instance
 end
 
-table.freeze(exports)
-
 return exports
