@@ -14,11 +14,13 @@
         ],
         "rootDirs": [
             "src",
-            "examples"
         ],
         "rootDir": "src"
     },
     "include": [
         "src"
+    ],
+    "exclude": [
+        "src/examples"
     ]
 }
