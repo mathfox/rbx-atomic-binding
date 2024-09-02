@@ -115,18 +115,23 @@ type Slashed<TValue> = [TValue] extends [never]
  * Never pass a `Depth` value lower than 1.
  * Doing so will result in an undefined behavior.
  */
-export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
+export type Paths<
+	TRoot,
+	TDepth extends number = DEFAULT_DEPTH,
+> = TDepth extends 0
 	? never
-	: Root extends Instance
+	: TRoot extends Instance
 		? {
-				[Key in keyof Root]: Root[Key] extends Instance
-					? [Root[Key]] extends [never]
+				[TKey in keyof TRoot]: TRoot[TKey] extends Instance
+					? [TRoot[TKey]] extends [never]
 						? never
-						: Key extends string
-							? `${Key}` | `${Key}${Slashed<Paths<Root[Key], Decr[Depth]>>}`
+						: TKey extends string
+							?
+									| `${TKey}`
+									| `${TKey}${Slashed<Paths<TRoot[TKey], Decr[TDepth]>>}`
 							: never
 					: never;
-			}[keyof Root]
+			}[keyof TRoot]
 		: never;
 
 /**
@@ -141,9 +146,9 @@ export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
  * type PetEffectPath = Paths<Index<PetsContainer, "Effects">>,
  * ```
  */
-export type Index<TRoot, Path> = Path extends keyof TRoot
-	? TRoot[Path]
-	: Path extends `${infer TChildName}/${infer TRestPath}`
+export type Index<TRoot, TPath> = TPath extends keyof TRoot
+	? TRoot[TPath]
+	: TPath extends `${infer TChildName}/${infer TRestPath}`
 		? TChildName extends keyof TRoot
 			? TRoot[TChildName] extends Instance
 				? Index<TRoot[TChildName], TRestPath>
@@ -154,12 +159,12 @@ export type Index<TRoot, Path> = Path extends keyof TRoot
 /**
  * Tries to index the instance from the provided `Path`, otherwise returns `undefined`
  */
-export type TryIndex<TRoot, Path> = Path extends keyof TRoot
-	? TRoot[Path]
-	: Path extends `${infer TChildName}/${infer TRestPath}`
+export type TryIndex<TRoot, TPath> = TPath extends keyof TRoot
+	? TRoot[TPath]
+	: TPath extends `${infer TChildName}/${infer TRestPath}`
 		? TChildName extends keyof TRoot
 			? TRoot[TChildName] extends Instance
-				? Index<TRoot[TChildName], TRestPath>
+				? TryIndex<TRoot[TChildName], TRestPath>
 				: undefined
 			: undefined
 		: undefined;

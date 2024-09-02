@@ -2,61 +2,34 @@ import type { Manifest } from "./Manifest";
 import type { DEFAULT_DEPTH, Index, Paths } from "./Shared";
 
 export type BoundFunction<
-	Root extends Instance,
-	Depth extends number = DEFAULT_DEPTH,
-	Base extends Record<string, Paths<Root, Depth>> = Record<
-		string,
-		Paths<RootImportData, Depth>
-	>,
+	TRoot extends Instance = Instance,
+	Base extends Record<string, string> = Record<string, string>,
 > = (
-	instances: ManifestInstances<Root, Depth, Base>,
+	instances: ManifestInstances<TRoot, Base>,
 	// biome-ignore lint/suspicious/noConfusingVoidType: Allow implicit `nil` return.
 ) => Callback | void;
 
 export type ManifestInstances<
-	Root extends Instance,
-	Depth extends number = DEFAULT_DEPTH,
-	Base extends {
-		[Alias in string]: Paths<Root, Depth>;
-	} = {
-		[Alias in string]: Paths<Root, Depth>;
-	},
+	TRoot extends Instance = Instance,
+	TBase extends Record<string, string> = Record<string, string>,
 > = {
-	[Alias in keyof Base]: Index<Root, Base[Alias]>;
-} & { root: Root };
-
-/**
- * Infers the {@link ManifestInstances} type either from {@link AtomicBinding} or {@link Manifest}.
- */
-export type InferManifestInstances<T> = T extends AtomicBinding<
-	infer Root,
-	infer Depth,
-	infer Base
->
-	? ManifestInstances<Root, Depth, Base>
-	: T extends Manifest<infer Root, infer Depth, infer Base>
-		? ManifestInstances<Root, Depth, Base>
-		: never;
+	[TAlias in keyof TBase]: Index<TRoot, TBase[TAlias]>;
+} & { root: TRoot };
 
 export interface AtomicBinding<
-	Root extends Instance = Instance,
-	Depth extends number = DEFAULT_DEPTH,
-	Base extends {
-		[Alias in string]: Paths<Root, Depth>;
-	} = {
-		[Alias in string]: Paths<Root, Depth>;
-	},
+	TRoot extends Instance = Instance,
+	TBase extends Record<string, string> = Record<string, string>,
 > {
-	bindRoot(root: Root): void;
+	bindRoot(root: TRoot): void;
 
-	unbindRoot(root: Root): void;
+	unbindRoot(root: TRoot): void;
 
 	destroy(): void;
 
-	waitForAlias<const K extends keyof Base>(
-		root: Root,
-		alias: K,
-	): Index<Root, Base[K]>;
+	waitForAlias<const TAlias extends keyof TBase>(
+		root: TRoot,
+		alias: TAlias,
+	): Index<TRoot, TBase[TAlias]>;
 }
 
 export function createAtomicBinding<
@@ -70,8 +43,8 @@ export function createAtomicBinding<
 	},
 >(
 	base: Base,
-	boundFn: BoundFunction<Root, Depth, Base>,
-) => AtomicBinding<Root, Depth, Base>;
+	boundFn: BoundFunction<Root, Base>,
+) => AtomicBinding<Root, Base>;
 
 export function createAtomicBinding<
 	const Root extends Instance,
@@ -81,7 +54,7 @@ export function createAtomicBinding<
 	},
 >(
 	manifest: Manifest<Root, Depth, Base>,
-	boundFn: BoundFunction<Root, Depth, Base>,
-): AtomicBinding<Root, Depth, Base>;
+	boundFn: BoundFunction<Root, Base>,
+): AtomicBinding<Root, Base>;
 
 export function isAtomicBinding(value: unknown): value is AtomicBinding;
