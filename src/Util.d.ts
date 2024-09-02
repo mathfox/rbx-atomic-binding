@@ -19,30 +19,32 @@ export type HasChildren<TValue> = ExtractChildren<TValue> extends EmptyObject
  * Omits all of the keys that do not represent the child Instance.
  */
 export type ExtractChildren<TRoot> = {
-	[Key in keyof TRoot as Key extends string
-		? TRoot[Key] extends Instance
+	[TKey in keyof TRoot as TKey extends string
+		? TRoot[TKey] extends Instance
 			? // Weird trick to exclude `never` type
-				[TRoot[Key]] extends [never]
+				[TRoot[TKey]] extends [never]
 				? never
-				: Key
+				: TKey
 			: never
-		: never]: TRoot[Key];
+		: never]: TRoot[TKey];
 };
 
 /**
  * Should be used alongside {@link InferDescendant} type to get the type of nested Instance.
  */
 export type ExtractDescendants<TRoot> = {
-	[Key in keyof TRoot as Key extends string
-		? TRoot[Key] extends Instance
+	[TKey in keyof TRoot as TKey extends string
+		? TRoot[TKey] extends Instance
 			? // Weird trick to exclude `never` type
-				[TRoot[Key]] extends [never]
+				[TRoot[TKey]] extends [never]
 				? never
-				: Key
+				: TKey
 			: never
-		: never]: ExtractDescendants<TRoot[Key]>;
-};
+		: never]: ExtractDescendants<TRoot[TKey]>;
+} & {};
 
-export type InferDescendant<T> = T extends ExtractDescendants<infer A>
-	? A
+export type InferDescendant<TValue> = TValue extends ExtractDescendants<
+	infer TDescendant
+>
+	? TDescendant
 	: never;

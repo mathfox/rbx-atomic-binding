@@ -105,10 +105,10 @@ type Decr = [
 	100,
 ];
 
-type Slashed<T> = [T] extends [never]
+type Slashed<TValue> = [TValue] extends [never]
 	? never
-	: T extends string
-		? `/${T}`
+	: TValue extends string
+		? `/${TValue}`
 		: never;
 
 /**
@@ -141,12 +141,12 @@ export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
  * type PetEffectPath = Paths<Index<PetsContainer, "Effects">>,
  * ```
  */
-export type Index<Root, Path> = Path extends keyof Root
-	? Root[Path]
-	: Path extends `${infer ChildName}/${infer RestPath}`
-		? ChildName extends keyof Root
-			? Root[ChildName] extends Instance
-				? Index<Root[ChildName], RestPath>
+export type Index<TRoot, Path> = Path extends keyof TRoot
+	? TRoot[Path]
+	: Path extends `${infer TChildName}/${infer TRestPath}`
+		? TChildName extends keyof TRoot
+			? TRoot[TChildName] extends Instance
+				? Index<TRoot[TChildName], TRestPath>
 				: never
 			: never
 		: never;
@@ -154,6 +154,12 @@ export type Index<Root, Path> = Path extends keyof Root
 /**
  * Tries to index the instance from the provided `Path`, otherwise returns `undefined`
  */
-export type TryIndex<Root, Path> = [Index<Root, Path>] extends [never]
-	? undefined
-	: Index<Root, Path>;
+export type TryIndex<TRoot, Path> = Path extends keyof TRoot
+	? TRoot[Path]
+	: Path extends `${infer TChildName}/${infer TRestPath}`
+		? TChildName extends keyof TRoot
+			? TRoot[TChildName] extends Instance
+				? Index<TRoot[TChildName], TRestPath>
+				: undefined
+			: undefined
+		: undefined;
