@@ -6,7 +6,8 @@
 	"types": "src/index.d.ts",
 	"files": ["src"],
 	"scripts": {
-		"check": "bunx @biomejs/biome check --write"
+		"check": "bunx @biomejs/biome check --write",
+		"bench": "( bunx tsc --noEmit --generateTrace tstrace || true ) && bunx @typescript/analyze-trace tstrace"
 	},
 	"repository": {
 		"type": "git",
