@@ -11,7 +11,7 @@ export type BoundFunction<
 
 export type ManifestInstances<
 	TRoot extends Instance = Instance,
-	TBase extends Record<string, string> = Record<string, string>,
+	TBase extends ManifestBase = ManifestBase,
 > = {
 	[TAlias in keyof TBase]: Index<TRoot, TBase[TAlias]>;
 } & { root: TRoot };
