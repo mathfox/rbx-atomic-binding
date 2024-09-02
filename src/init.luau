@@ -1,5 +1,6 @@
 --!strict
 --!native
+--!optimize 2
 
 local AtomicBindingConfiguration = require(script.AtomicBindingConfiguration)
 local AtomicBinding = require(script.AtomicBinding)

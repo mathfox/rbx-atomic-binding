@@ -1,5 +1,6 @@
 --!strict
 --!native
+--!optimize 2
 
 local Manifest = {}
 Manifest.prototype = {}

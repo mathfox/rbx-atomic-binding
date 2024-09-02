@@ -1,5 +1,6 @@
 --!nonstrict
 --!native
+--!optimize 2
 
 --[[
     The credit goes to https://www.roblox.com/
