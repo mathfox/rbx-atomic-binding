@@ -112,7 +112,8 @@ type Slashed<T> = [T] extends [never]
 		: never;
 
 /**
- * Never pass a `Depth` value lower than 1. Doing so causes undefined behavior.
+ * Never pass a `Depth` value lower than 1.
+ * Doing so will result in an undefined behavior.
  */
 export type Paths<Root, Depth extends number = DEFAULT_DEPTH> = Depth extends 0
 	? never

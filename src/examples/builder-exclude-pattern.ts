@@ -31,8 +31,6 @@ interface CustomWorkspace extends WorldRoot {
 	};
 }
 
-type Path = Paths<CustomWorkspace>;
-
 class AssetsBuilder<
 	const Root,
 	const SubPath extends string = never,
