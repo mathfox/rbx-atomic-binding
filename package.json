@@ -1,12 +1,13 @@
 {
 	"name": "@rbxts/atomic-binding",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"description": "Types for AtomicBinding module",
-	"main": "src/init.lua",
+	"main": "src/init.luau",
 	"types": "src/index.d.ts",
 	"files": ["src", "!src/examples"],
 	"scripts": {
-		"check": "bunx @biomejs/biome check --write"
+		"check": "bunx @biomejs/biome check --write",
+		"prepublishOnly": "bun run check"
 	},
 	"repository": {
 		"type": "git",
@@ -33,11 +34,9 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"roblox-ts": "^2.3.0-dev-5532593",
-		"typescript": "^5.7.0-dev.20240902"
-	},
-	"dependencies": {
-		"@rbxts/compiler-types": "^2.3.0-types.2",
-		"@rbxts/types": "^1.0.804"
+		"roblox-ts": "^3.0.0-dev-d1d5486",
+		"typescript": "^5.7.0-dev.20240913",
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.805"
 	}
 }
